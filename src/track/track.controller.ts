@@ -8,7 +8,7 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  Res,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { Track } from './track.interface';
@@ -21,9 +21,16 @@ export class TrackController {
     return this.trackService.getTracks();
   }
   @Get(':id')
-  getTrackById(@Param('id') id: number): Promise<any> {
+  getTrackById(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
+  ): Promise<any> {
     return this.trackService.getTrackById(id);
   }
+
   @Post()
   createTrack(@Body() body): Promise<any> {
     return this.trackService.createTrack(body);
