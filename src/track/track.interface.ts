@@ -1,5 +1,5 @@
 export interface Track {
-  id: number;
+  id?: number;
   title: string;
   duration: number;
   artist: string;
