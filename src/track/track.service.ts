@@ -3,6 +3,7 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { Track } from './track.interface';
 const BASE_URL = 'http://localhost:3030/tracks/';
@@ -13,7 +14,19 @@ export class TrackService {
     const parsed = await res.json();
     return parsed;
   }
+  async getTrackByArtist(artist: string): Promise<any> {
+    const res = await fetch(BASE_URL);
+    if (!res.ok) throw new BadRequestException();
+    const allTracks = await res.json();
+    const track = allTracks.filter((track: Track) =>
+      track.artist.toLocaleLowerCase().includes(artist.toLocaleLowerCase()),
+    );
+    console.log(track);
 
+    if (!track.length)
+      throw new NotFoundException(`Ninguna pista de ${artist}.`);
+    return track;
+  }
   async getTrackById(id: number): Promise<Track> {
     const res = await fetch(BASE_URL + id);
     const parsed = await res.json();

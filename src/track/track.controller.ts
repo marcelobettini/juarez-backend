@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
 import { Track } from './track.interface';
@@ -17,8 +18,9 @@ import { Track } from './track.interface';
 export class TrackController {
   constructor(private readonly trackService: TrackService) {}
   @Get()
-  getTracks(): Promise<Track[]> {
-    return this.trackService.getTracks();
+  getTracks(@Query('artist') artist?: string): Promise<Track[]> {
+    if (!artist) return this.trackService.getTracks();
+    return this.trackService.getTrackByArtist(artist);
   }
   @Get(':id')
   getTrackById(
